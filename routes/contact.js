@@ -28,11 +28,11 @@ router.post("/", function (req, res, next) {
         ],
     })
     .then(result => {
-        console.log(result.body);
+        //console.log(result.body);
         return res.json({ username: result.body });
     })
     .catch(err => {
-        console.log(err.statusCode, err.message);
+        //console.log(err.statusCode, err.message);
         return res.status(500).send(err.message);
     });
 });
