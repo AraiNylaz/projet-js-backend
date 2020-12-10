@@ -3,6 +3,7 @@ var path = require("path");
 var logger = require("morgan");
 
 var usersRouter = require("./routes/users");
+var contactRouter = require("./routes/contact");
 
 var app = express();
 
@@ -19,5 +20,6 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/users", usersRouter);
+app.use("/api/contact", contactRouter);
 
 module.exports = app;
