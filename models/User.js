@@ -4,17 +4,18 @@ const saltRounds = 10;
 const FILE_PATH = __dirname + "/users.json";
 
 class User {
-  constructor(username, email, password) {
+  constructor(username, email, password,isAdmin) {
     this.username = username;
     this.email = email;
     this.password = password;
+    this.isAdmin = false ;
   }
 
   /* return a promise with async / await */ 
   async save() {
     let userList = getUserListFromFile(FILE_PATH);
     const hashedPassword = await bcrypt.hash(this.password, saltRounds);
-    userList.push({ username: this.email, email: this.email, password: hashedPassword });
+    userList.push({ username: this.email, email: this.email, password: hashedPassword ,isAdmin: this.isAdmin });
     saveUserListToFile(FILE_PATH, userList);
     return true;
   }
@@ -24,9 +25,10 @@ class User {
     if (!email || !password) return false;
     let userFound = User.getUserFromList(email);
     console.log("User::checkCredentials:", userFound, " password:", password);
+    
     if (!userFound) return Promise.resolve(false);
   
-
+    this.isAdmin = userFound.isAdmin;
     return bcrypt.compare(password, userFound.password)
       .then((match) => match)
       .catch((err) => err);
@@ -50,6 +52,11 @@ class User {
     }
     return;
   }
+  static isAdmin(username){
+    const userFound = User.getUserFromList(username);
+    return userFound.isAdmin == true;
+  }
+  
 }
 
 function getUserListFromFile(filePath) {
