@@ -41,13 +41,13 @@ router.post("/", function (req, res, next) {
   let newUser = new User(req.body.email, req.body.email, req.body.password);
   newUser.save().then(() => {
     console.log("afterRegisterOp:", User.list);
-    jwt.sign({ username: newUser.username, isAdmin: user.isAdmin}, jwtSecret,{ expiresIn: LIFETIME_JWT }, (err, token) => {
+    jwt.sign({ username: newUser.username, isAdmin: newUser.isAdmin}, jwtSecret,{ expiresIn: LIFETIME_JWT }, (err, token) => {
       if (err) {
         console.error("POST users/ :", err);
         return res.status(500).send(err.message);
       }
       console.log("POST users/ token:", token);
-      return res.json({ username: newUser.username, token });
+      return res.json({ username: newUser.username, isAdmin: newUser.isAdmin, token });
     });
   });
 });
