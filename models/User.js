@@ -41,7 +41,7 @@ class User {
 
   static isUser(username) {
     const userFound = User.getUserFromList(username);
-    console.log("User::isUser:", userFound);
+    //console.log("User::isUser:", userFound);
     return userFound !== undefined;
   }
 
