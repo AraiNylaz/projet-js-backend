@@ -1,13 +1,13 @@
 var express = require("express");
 var router = express.Router();
-var User = require("../models/User.js");
+//var User = require("../models/User.js");
 let { authorize, signAsynchronous } = require("../utils/auth");
 const jwt = require("jsonwebtoken");
 const jwtSecret = "jkjJ1235Ohno!";
 const LIFETIME_JWT = 24 * 60 * 60 * 1000 ; // 10;// in seconds // 24 * 60 * 60 * 1000 = 24h 
-const mongoose = require('mongoose');
+/*const mongoose = require('mongoose');
 const Note = require('../models/note.js');
-const User3 = require('../models/UsersDB.js');
+const UserMongo = require('../models/UsersMongo.js');*/
 var RealUser = require("../models/RealUser.js");
 
 const bcrypt = require("bcrypt");
@@ -81,7 +81,7 @@ router.get("/", authorize, function (req, res, next) {
   RealUser.list().then((data) => {
     console.log("POST users/login:", data);
     return res.json(data);
-  });
+  }).catch((err) => { console.log(err); });
 });
 
 /* POST user data for authentication */
@@ -104,8 +104,8 @@ router.post("/login", function (req, res, next) {
         console.log("POST users/login Error:", "Unauthentified");
         return res.status(401).send("bad email/password");
       }
-    });
-  });
+    }).catch((err) => { console.log(err); });
+  }).catch((err) => { console.log(err); });
 });
 
 /* POST a new user *//* Register */
@@ -142,8 +142,13 @@ router.get("/:username", function (req, res, next) {
     return res.status(404).send("ressource not found");
   }*/
   console.log("GET users/:username", req.params.username);
-  let userFound = RealUser.getUserByUsername(req.params.username).then((data) => {
-    console.log(data);
+  let userFound = RealUser.getUserByUsername(req.params.username).then((userFound) => {
+    console.log(userFound);
+    if(userFound){
+      return res.json(userFound);
+    } else {
+      return res.status(404).send("ressource not found");
+    }
   }).catch((err) => { console.log(err); });
 });
 

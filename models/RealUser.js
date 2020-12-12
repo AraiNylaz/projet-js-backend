@@ -2,7 +2,7 @@
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 const mongoose = require('mongoose');
-const User3 = require('../models/UsersDB.js');
+const UserMongo = require('./UsersMongo.js');
 
 class RealUser {
   constructor(username, email, password) {
@@ -15,7 +15,7 @@ class RealUser {
   /* return a promise with async / await */ 
   async save() {
     let hashedPassword = await bcrypt.hash(this.password, saltRounds);
-    let user = new User3({ username: this.username, email: this.email, password: hashedPassword, isAdmin: this.isAdmin });
+    let user = new UserMongo({ username: this.username, email: this.email, password: hashedPassword, isAdmin: this.isAdmin });
 
     await user.save().then(savedUser => {
         //console.log("enregistrer");
@@ -30,7 +30,7 @@ class RealUser {
   async checkCredentials(email, password) {
     if (!email || !password) return false;
     let isExisting = false;
-    await User3.find({ email: email }).then(result => {
+    await UserMongo.find({ email: email }).then(result => {
       result.forEach(user => {
         this.isAdmin = user.isAdmin;
         return isExisting = bcrypt.compare(password, user.password).then((match) => match).catch((err) => err);
@@ -50,7 +50,7 @@ class RealUser {
     /*let userList = getUserListFromFile(FILE_PATH);
     return userList;*/
     let list;
-    await User3.find({}).then(users => {
+    await UserMongo.find({}).then(users => {
       //console.log(users);
       return list = users;
     })
@@ -69,7 +69,7 @@ class RealUser {
   }
 
   static async isUserCheck(email, isAlreadyUse) {
-    let response = await User3.find({}).then(result => {
+    let response = await UserMongo.find({}).then(result => {
       result.forEach(note => {
           if(note){
               //console.log("note",note, "note.email", note.email);
@@ -97,13 +97,12 @@ class RealUser {
 
   static async getUserByUsername(username){
     let userFound;
-    await User3.find({ username: username }).then(result => {
+    await UserMongo.find({ username: username }).then(result => {
       result.forEach(user => {
         return userFound = user;
       });
     })
     .then((data) => {
-
       return userFound;
     })
     .catch(error => {
