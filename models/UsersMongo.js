@@ -1,6 +1,4 @@
 "strict mode";
-const bcrypt = require("bcrypt");
-const saltRounds = 10;
 const mongoose = require('mongoose');
 
 const url = process.env.MONGODB_URI;
@@ -25,26 +23,5 @@ userSchema.set('toJSON', {
     delete returnedObject.__v;
   }
 });
-
-/*function isUser(email){
-    User.find({ email: email }).then(result => {
-        if(result) return true;
-    });
-    return false;
-}
-
-async function newUser(username, email, password){
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-    const user = new User({
-        username: username,
-        email: email,
-        password: hashedPassword,
-        isAdmin: false,
-    });
-    user.save().then(result => {
-        console.log('note saved!');
-        mongoose.connection.close();
-    });
-}*/
 
 module.exports = mongoose.model('User', userSchema);
