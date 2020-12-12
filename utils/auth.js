@@ -14,10 +14,11 @@ const authorize = (req, res, next) => {
 
   jwt.verify(token, jwtSecret, (err, token) => {
     if (err) return res.status(401).send(err.message);
-    let user = User.getUserFromList(token.username);
-    if (!user) return res.status(401).send("User not found.");
-    // authorization is completed, call the next middleware
-    next();
+    User.getUserByUsername(token.username).then((user) => {
+      if (!user) return res.status(401).send("User not found.");
+      // authorization is completed, call the next middleware
+      next();
+    });
   });
 };
 
